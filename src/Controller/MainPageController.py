@@ -76,8 +76,8 @@ def calculate_years(year1, year2):
         year2.toPython(), year1.toPython()).months
     difference_in_days = relativedelta(year2.toPython(), year1.toPython()).days
     value = difference_years \
-            + (difference_months / 12) \
-            + (difference_in_days / 365)
+        + (difference_months / 12) \
+        + (difference_in_days / 365)
     return "%.2f" % value
 
 

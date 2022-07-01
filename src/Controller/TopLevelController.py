@@ -1,8 +1,16 @@
 from PySide6 import QtWidgets
 
-from src.Controller.GUIController import WelcomeWindow, OpenPatientWindow, \
-    MainWindow, PyradiProgressBar, FirstTimeWelcomeWindow, ImageFusionWindow, \
-    BatchWindow, OpenPTCTPatientWindow
+from src.Controller.GUIController import (
+    WelcomeWindow,
+    OpenPatientWindow,
+    MainWindow,
+    PyradiProgressBar,
+    FirstTimeWelcomeWindow,
+    ImageFusionWindow,
+    BatchWindow,
+    OpenPTCTPatientWindow
+)
+
 
 class Controller:
 
@@ -90,9 +98,7 @@ class Controller:
             self.main_window.update_ui()
 
         if isinstance(self.image_fusion_window, ImageFusionWindow):
-            progress_window.update_progress(
-                ("Registering Images...\nThis may take a few minutes.", 
-                90))
+            progress_window.update_progress(("Registering Images...\nThis may take a few minutes.", 90))
             self.main_window.update_image_fusion_ui()
 
         if isinstance(self.pt_ct_window, OpenPTCTPatientWindow):
@@ -152,5 +158,5 @@ class Controller:
         if not isinstance(self.pt_ct_window, OpenPTCTPatientWindow):
             self.pt_ct_window = OpenPTCTPatientWindow(self.default_directory)
             self.pt_ct_window.go_next_window.connect(self.show_main_window)
-            
+
         self.pt_ct_window.show()

@@ -242,7 +242,7 @@ class MainWindow(QtWidgets.QMainWindow, UIMainWindow):
         self.cleanup_pt_ct_viewer()
 
     def cleanup_image_fusion(self):
-        # Explicity destroy objects - the purpose of this is to clear
+        # Explicitly destroy objects - the purpose of this is to clear
         # any image fusion tabs that have been used previously.
         # Try-catch in the event user has not prompted image-fusion.
         try:
