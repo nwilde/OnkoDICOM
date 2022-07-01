@@ -79,6 +79,7 @@ class TestManipulateROI:
         self.manipulate_window = self.structures_tab.\
             roi_manipulate_handler.manipulate_window
 
+
 @pytest.fixture(scope="module")
 def test_object():
     """Function to pass a shared TestManipulateROI object to each test."""
@@ -139,4 +140,3 @@ def test_warning_message_displaying(test_object):
     # The save button is clicked when not all values are set
     test_object.manipulate_window.onSaveClicked()
     assert test_object.manipulate_window.warning_message.isVisible()
-

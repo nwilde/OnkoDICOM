@@ -60,21 +60,18 @@ class TestROI:
         # Create patient dict container object
         self.patient_dict_container = PatientDictContainer()
         self.patient_dict_container.clear()
-        self.patient_dict_container.set_initial_values \
-            (file_path, read_data_dict, file_names_dict)
+        self.patient_dict_container.set_initial_values(file_path, read_data_dict, file_names_dict)
 
         # Set additional attributes in patient dict container
         # (otherwise program will crash and test will fail)
         if "rtss" in file_names_dict:
             dataset_rtss = dcmread(file_names_dict['rtss'])
             self.rois = ImageLoading.get_roi_info(dataset_rtss)
-            dict_raw_contour_data, dict_numpoints = \
-                ImageLoading.get_raw_contour_data(dataset_rtss)
+            dict_raw_contour_data, dict_numpoints = ImageLoading.get_raw_contour_data(dataset_rtss)
             dict_pixluts = ImageLoading.get_pixluts(read_data_dict)
 
             self.patient_dict_container.set("rois", self.rois)
-            self.patient_dict_container.set("raw_contour",
-                                            dict_raw_contour_data)
+            self.patient_dict_container.set("raw_contour", dict_raw_contour_data)
             self.patient_dict_container.set("num_points", dict_numpoints)
             self.patient_dict_container.set("pixluts", dict_pixluts)
 

@@ -57,8 +57,7 @@ class TestSuv2Roi:
         # Create patient dict container object
         self.patient_dict_container = PatientDictContainer()
         self.patient_dict_container.clear()
-        self.patient_dict_container.set_initial_values \
-            (file_path, read_data_dict, file_names_dict)
+        self.patient_dict_container.set_initial_values(file_path, read_data_dict, file_names_dict)
 
         # Create variables to be initialised later
         self.dicom_files = None

@@ -27,9 +27,12 @@ def test_first_time_welcome_window(qtbot, tmpdir, init_first_time_window_config)
     db_file_path = Path(os.environ['USER_ONKODICOM_HIDDEN']).joinpath('TestFirstTimeWelcomeWindow.db')
 
     assert first_time_welcome_window.first_time_welcome_message_label.text() == "Welcome to OnkoDICOM!"
-    assert first_time_welcome_window.first_time_welcome_message_slogan.text() == "OnkoDICOM - the solution for producing data for analysis from your oncology plans and scans."
-    assert first_time_welcome_window.first_time_welcome_default_dir_prompt.text() == "Choose the path of the default directory containing all DICOM files:"
-    assert first_time_welcome_window.first_time_welcome_input_box.placeholderText() == "Enter DICOM Files Path (For example, C:\path\\to\your\DICOM\Files)"
+    assert first_time_welcome_window.first_time_welcome_message_slogan.text() \
+           == "OnkoDICOM - the solution for producing data for analysis from your oncology plans and scans."
+    assert first_time_welcome_window.first_time_welcome_default_dir_prompt.text() \
+           == "Choose the path of the default directory containing all DICOM files:"
+    assert first_time_welcome_window.first_time_welcome_input_box.placeholderText() \
+           == r"Enter DICOM Files Path (For example, C:\path\to\your\DICOM\Files)"
     assert first_time_welcome_window.first_time_welcome_choose_button.text() == "Choose"
     assert first_time_welcome_window.save_dir_button.text() == "Confirm"
     assert first_time_welcome_window.skip_button.text() == "Skip"
@@ -61,7 +64,7 @@ def test_first_time_welcome_window(qtbot, tmpdir, init_first_time_window_config)
         qtbot.mouseClick(first_time_welcome_window.save_dir_button, QtCore.Qt.LeftButton)
 
     # Test if the database has been created
-    assert os.path.isfile(db_file_path) == True
+    assert os.path.isfile(db_file_path) is True
 
     # Delete temp csv
     os.remove(csv_path)

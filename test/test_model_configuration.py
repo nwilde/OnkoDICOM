@@ -51,7 +51,7 @@ def test_get_default_directory(init_sqlite_config):
     configuration = Configuration()
     new_default_dir = "/home/test/dir"
     # Insert new default dir
-    init_sqlite_config.execute("""INSERT INTO configuration (id, default_dir) 
+    init_sqlite_config.execute("""INSERT INTO configuration (id, default_dir)
                                     VALUES (1, "%s");""" % new_default_dir)
     init_sqlite_config.commit()
 

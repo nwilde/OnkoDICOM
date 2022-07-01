@@ -12,6 +12,7 @@ from pydicom import dcmread
 from pydicom.errors import InvalidDicomError
 from skimage import measure
 
+
 def find_DICOM_files(file_path):
     """Function to find DICOM files in a given folder.
     :param file_path: File path of folder to search.
@@ -54,21 +55,18 @@ class TestIso2Roi:
         # Create patient dict container object
         self.patient_dict_container = PatientDictContainer()
         self.patient_dict_container.clear()
-        self.patient_dict_container.set_initial_values\
-            (file_path, read_data_dict, file_names_dict)
+        self.patient_dict_container.set_initial_values(file_path, read_data_dict, file_names_dict)
 
         # Set additional attributes in patient dict container
         # (otherwise program will crash and test will fail)
         if "rtss" in file_names_dict:
             dataset_rtss = dcmread(file_names_dict['rtss'])
             self.rois = ImageLoading.get_roi_info(dataset_rtss)
-            dict_raw_contour_data, dict_numpoints = \
-                ImageLoading.get_raw_contour_data(dataset_rtss)
+            dict_raw_contour_data, dict_numpoints = ImageLoading.get_raw_contour_data(dataset_rtss)
             dict_pixluts = ImageLoading.get_pixluts(read_data_dict)
 
             self.patient_dict_container.set("rois", self.rois)
-            self.patient_dict_container.set("raw_contour",
-                                            dict_raw_contour_data)
+            self.patient_dict_container.set("raw_contour", dict_raw_contour_data)
             self.patient_dict_container.set("num_points", dict_numpoints)
             self.patient_dict_container.set("pixluts", dict_pixluts)
 
@@ -133,14 +131,12 @@ def test_calculate_prescription_dose_boundaries(test_object):
     grid = get_dose_grid(rt_plan_dose, float(z))
     rt_dose_dose = 100
 
-    isodose_percentages = \
-        [10, 25, 50, 75, 80, 85, 90, 95, 100, 105]
+    isodose_percentages = [10, 25, 50, 75, 80, 85, 90, 95, 100, 105]
 
     # Calculate prescription dose boundaries
     if not (grid == []):
         for sd in isodose_percentages:
-            dose_level = sd * rt_dose_dose / \
-                         (rt_plan_dose.DoseGridScaling * 10000)
+            dose_level = sd * rt_dose_dose / (rt_plan_dose.DoseGridScaling * 10000)
             boundaries = measure.find_contours(grid, dose_level)
 
     # Assert that there are no boundaries
@@ -162,8 +158,7 @@ def test_generate_roi_from_iso(test_object):
 
     # Create fake contour data
     contours = [
-        [0, 1], [1, 2], [2, 3],
-        [3, 4], [4, 5]
+        [0, 1], [1, 2], [2, 3], [3, 4], [4, 5]
     ]
 
     # Create fake pixlut data
@@ -211,6 +206,7 @@ def test_find_rtss(test_object):
     rtss_directory = Path(test_object.patient_dict_container.get("file_rtss"))
 
     assert rtss_directory
+
 
 def test_create_rtss(test_object):
     """

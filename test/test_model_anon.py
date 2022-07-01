@@ -12,8 +12,7 @@ import pytest
 from src.Model.Anon import (
     _check_identity_mapping_file_exists,
     _create_reidentification_spreadsheet,
-    _trim_bracketing_single_quotes,
-    anonymize,
+    _trim_bracketing_single_quotes
 )
 
 

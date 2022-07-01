@@ -73,8 +73,7 @@ class TestSuv2RoiGui:
         # Create patient dict container object
         self.patient_dict_container = PatientDictContainer()
         self.patient_dict_container.clear()
-        self.patient_dict_container.set_initial_values \
-            (file_path, read_data_dict, file_names_dict)
+        self.patient_dict_container.set_initial_values(file_path, read_data_dict, file_names_dict)
 
         # Set additional attributes in patient dict container
         # (otherwise program will crash and test will fail)

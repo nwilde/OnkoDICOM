@@ -1,5 +1,4 @@
 import os
-import platform
 
 import PySide6
 import matplotlib
@@ -94,7 +93,7 @@ def test_dvh_tab_with_dvh_not_calculated(qtbot, test_object, init_config):
     button_calc_dvh = \
         test_object.main_window.dvh_tab.dvh_tab_layout.itemAt(1).layout()
     button_calc_dvh = button_calc_dvh.itemAt(1).widget()
-    
+
     assert isinstance(button_calc_dvh, PySide6.QtWidgets.QPushButton) is True
 
 

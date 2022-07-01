@@ -2,7 +2,6 @@ import os
 import sqlite3
 from pathlib import Path
 import pytest
-from PySide6.QtWidgets import QApplication
 
 from src.Model.Configuration import Configuration
 

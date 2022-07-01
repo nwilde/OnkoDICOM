@@ -9,7 +9,6 @@ from PySide6.QtWidgets import QApplication
 from src.Controller.BatchProcessingController import BatchProcessingController
 from src.Model import DICOMDirectorySearch
 from src.Model import DICOMStructuredReport
-from src.Model import ROI
 from src.Model.batchprocessing.BatchProcessClinicalDataSR2CSV import \
     BatchProcessClinicalDataSR2CSV
 from src.Model.batchprocessing.BatchProcessCSV2ClinicalDataSR import \
@@ -227,8 +226,7 @@ def test_batch_pyrad2csv(test_object):
         process.start()
 
         # Assert the resulting .csv file exists
-        assert os.path.isfile(Path.joinpath(test_object.batch_dir, 'CSV',
-                                            filename))
+        assert os.path.isfile(Path.joinpath(test_object.batch_dir, 'CSV', filename))
 
 
 def test_batch_pyrad2pyradsr(test_object):
