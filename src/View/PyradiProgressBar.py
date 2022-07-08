@@ -94,7 +94,7 @@ class PyradiExtended(QtCore.QThread):
         """
         Set pyradiomics progress bar percentage and name of ROI being
         processed.
-        
+
         :param percent:     Percentage to be set in the progress bar
         :param roi_name:    Name of ROI currently being processed
         """

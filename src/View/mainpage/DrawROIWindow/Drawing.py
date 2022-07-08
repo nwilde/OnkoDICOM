@@ -89,8 +89,8 @@ class Drawing(QtWidgets.QGraphicsScene):
                 self.max_x = self.rows
                 self.max_y = self.cols
 
-            """pixel_array is a 2-Dimensional array containing all pixel 
-            coordinates of the q_image. pixel_array[x][y] will return the 
+            """pixel_array is a 2-Dimensional array containing all pixel
+            coordinates of the q_image. pixel_array[x][y] will return the
             density of the pixel """
             self.pixel_array = data_set._pixel_array
             self.q_image = self.img.toImage()
@@ -101,9 +101,9 @@ class Drawing(QtWidgets.QGraphicsScene):
                                      x_coord] <= self.max_pixel):
                         self.target_pixel_coords.add((x_coord, y_coord))
 
-            """For the meantime, a new image is created and the pixels 
-            specified are coloured. This will need to altered so that it 
-            creates a new layer over the existing image instead of replacing 
+            """For the meantime, a new image is created and the pixels
+            specified are coloured. This will need to altered so that it
+            creates a new layer over the existing image instead of replacing
             it. """
             # Convert QPixMap into Qimage
             for x_coord, y_coord in self.target_pixel_coords:

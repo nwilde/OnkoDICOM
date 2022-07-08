@@ -10,8 +10,7 @@ from src.Controller.PathHandler import resource_path
 class OpenPatientProgressWindow(ProgressWindow):
 
     def __init__(self, *args,
-                 kwargs=QtCore.Qt.WindowTitleHint |
-                        QtCore.Qt.WindowCloseButtonHint):
+                 kwargs=QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint):
         super(OpenPatientProgressWindow, self).__init__(*args, kwargs)
 
     def start_loading(self, selected_files, existing_rtss=None):
@@ -21,7 +20,6 @@ class OpenPatientProgressWindow(ProgressWindow):
 
         # Start loading the selected files on separate thread
         self.start(image_loader.load)
-
 
     def prompt_calc_dvh(self):
         """

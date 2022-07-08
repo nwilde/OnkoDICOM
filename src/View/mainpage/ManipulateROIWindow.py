@@ -38,8 +38,7 @@ class UIManipulateROIWindow:
                                            "Outer Rind (annulus)"]
         self.multiple_roi_operation_names = ["Union", "Intersection",
                                              "Difference"]
-        self.operation_names = self.multiple_roi_operation_names + \
-                               self.single_roi_operation_names
+        self.operation_names = self.multiple_roi_operation_names + self.single_roi_operation_names
 
         self.new_ROI_contours = None
         self.manipulate_roi_window_instance = manipulate_roi_window_instance

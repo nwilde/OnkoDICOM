@@ -1,5 +1,4 @@
 import numpy as np
-import vtk
 from PySide6 import QtWidgets
 from PySide6.QtWidgets import QPushButton
 from vtkmodules.util import numpy_support

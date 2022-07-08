@@ -34,7 +34,8 @@ class RenameROIWindow(QDialog):
         self.setMinimumSize(300, 90)
 
         self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(resource_path("res/images/icon.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)  # adding icon
+        # Adding icon
+        self.icon.addPixmap(QtGui.QPixmap(resource_path("res/images/icon.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.setWindowIcon(self.icon)
 
         self.explanation_text = QLabel("Enter a new name:")
@@ -79,7 +80,6 @@ class RenameROIWindow(QDialog):
         self.layout.addWidget(self.list_label)
         self.layout.addWidget(self.list_of_ROIs)
         self.setLayout(self.layout)
-
 
     def on_text_edited(self, text):
         self.rename_button.setDefault(True)

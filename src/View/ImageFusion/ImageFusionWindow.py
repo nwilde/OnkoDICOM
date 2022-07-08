@@ -51,12 +51,12 @@ class UIImageFusionWindow(object):
         self.open_patient_window_instance_vertical_box.addWidget(
             self.open_patient_directory_prompt)
 
-        # Create a horizontal box to hold the input box for the directory 
+        # Create a horizontal box to hold the input box for the directory
         # and the choose button
         self.open_patient_directory_input_horizontal_box = QHBoxLayout()
         self.open_patient_directory_input_horizontal_box.setObjectName(
             "OpenPatientDirectoryInputHorizontalBox")
-        # Create a textbox to contain the path to the directory that contains 
+        # Create a textbox to contain the path to the directory that contains
         # the DICOM files
         self.open_patient_directory_input_box = \
             UIImageFusionWindowDragAndDropEvent(self)
@@ -96,7 +96,7 @@ class UIImageFusionWindow(object):
         self.open_patient_window_instance_vertical_box.addWidget(
             self.open_patient_directory_input_widget)
 
-        # Create a horizontal box to hold the stop button and direction to 
+        # Create a horizontal box to hold the stop button and direction to
         # the user on where to select the patient
         self.open_patient_appear_prompt_and_stop_horizontal_box = QHBoxLayout()
         self.open_patient_appear_prompt_and_stop_horizontal_box.setObjectName(
@@ -135,7 +135,7 @@ class UIImageFusionWindow(object):
         self.open_patient_window_instance_vertical_box.addWidget(
             self.open_patient_appear_prompt_and_stop_widget)
 
-        # Create a tree view list to list out all patients in the directory 
+        # Create a tree view list to list out all patients in the directory
         # selected above
         self.open_patient_window_patients_tree = QTreeWidget()
         self.open_patient_window_patients_tree.setObjectName(
@@ -207,8 +207,7 @@ class UIImageFusionWindow(object):
         self.open_patient_window_confirm_button.setProperty(
             "QPushButtonClass", "success-button")
         self.open_patient_window_patient_open_actions_horizontal_box. \
-            addWidget(
-            self.open_patient_window_confirm_button)
+            addWidget(self.open_patient_window_confirm_button)
 
         # Create a widget to house all of the actions button for open patient
         #  window
@@ -218,7 +217,7 @@ class UIImageFusionWindow(object):
         self.open_patient_window_instance_vertical_box.addWidget(
             self.open_patient_window_patient_open_actions_widget)
 
-        # Set the vertical box fourth element, the tree view, to stretch 
+        # Set the vertical box fourth element, the tree view, to stretch
         # out as far as possible
         self.open_patient_window_instance_vertical_box.setStretch(3, 4)
         self.open_patient_window_instance_central_widget = QWidget()
@@ -240,7 +239,7 @@ class UIImageFusionWindow(object):
         open_image_fusion_select_instance.setCentralWidget(
             self.open_patient_window_instance_central_widget)
 
-        # Set the current stylesheet to the instance and connect it back 
+        # Set the current stylesheet to the instance and connect it back
         # to the caller through slot
         _stylesheet = open(resource_path(self.stylesheet_path)).read()
         open_image_fusion_select_instance.setStyleSheet(_stylesheet)
@@ -260,7 +259,7 @@ class UIImageFusionWindow(object):
         self.open_patient_directory_input_box.setPlaceholderText(
             _translate("OpenPatientWindowInstance",
                        "Enter DICOM Files Path (For example, "
-                       "C:\path\\to\your\DICOM\Files)"))
+                       r"C:\path\to\your\DICOM\Files)"))
         self.open_patient_directory_choose_button.setText(_translate(
             "OpenPatientWindowInstance",
             "Choose"))

@@ -203,8 +203,8 @@ class DVHTab(QtWidgets.QWidget):
             button_yes = QtWidgets.QPushButton("Yes")
 
             """ We want the buttons 'No' & 'Yes' to be displayed in that exact order. QMessageBox displays buttons in
-                respect to their assigned roles. (0 first, then 0 and so on) 'AcceptRole' is 0 and 'RejectRole' is 1 
-                thus by counterintuitively assigning 'No' to 'AcceptRole' and 'Yes' to 'RejectRole' the buttons are 
+                respect to their assigned roles. (0 first, then 0 and so on) 'AcceptRole' is 0 and 'RejectRole' is 1
+                thus by counterintuitively assigning 'No' to 'AcceptRole' and 'Yes' to 'RejectRole' the buttons are
                 positioned as desired.
             """
             mb.addButton(button_no, QtWidgets.QMessageBox.AcceptRole)
@@ -212,7 +212,8 @@ class DVHTab(QtWidgets.QWidget):
 
             # Apply stylesheet to the message box and add icon to the window
             mb.setStyleSheet(open(stylesheet_path).read())
-            mb.setWindowIcon(QtGui.QIcon(resource_path(Path.cwd().joinpath('res', 'images', 'btn-icons', 'onkodicom_icon.png'))))
+            mb.setWindowIcon(QtGui.QIcon(resource_path(Path.cwd().joinpath('res', 'images', 'btn-icons',
+                                                                           'onkodicom_icon.png'))))
 
             mb.exec_()
 

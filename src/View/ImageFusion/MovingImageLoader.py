@@ -16,8 +16,8 @@ from src.View.ImageLoader import ImageLoader
 
 class MovingImageLoader(ImageLoader):
     """
-    This class is responsible for initializing and creating all the values 
-    required to create an instance of the PatientDictContainer, that is 
+    This class is responsible for initializing and creating all the values
+    required to create an instance of the PatientDictContainer, that is
     used to store all the DICOM-related data used to create the patient window.
     """
 
@@ -28,13 +28,13 @@ class MovingImageLoader(ImageLoader):
 
     def load(self, interrupt_flag, progress_callback):
         """
-        :param interrupt_flag: A threading.Event() object that tells the 
+        :param interrupt_flag: A threading.Event() object that tells the
         function to stop loading.
 
-        :param progress_callback: A signal that receives the current 
+        :param progress_callback: A signal that receives the current
         progress of the loading.
 
-        :return: PatientDictContainer object containing all values related 
+        :return: PatientDictContainer object containing all values related
         to the loaded DICOM files.
         """
         progress_callback.emit(("Creating datasets...", 0))

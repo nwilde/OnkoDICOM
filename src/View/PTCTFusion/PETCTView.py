@@ -58,7 +58,7 @@ class PetCtView(QtWidgets.QWidget):
         Triggers when the start button is pressed
         """
         self.load_pet_ct_button.setEnabled(False)
-        self.load_pt_ct_signal.emit() # Opens the OpenPTCTPatientWindow
+        self.load_pt_ct_signal.emit()  # Opens the OpenPTCTPatientWindow
         self.load_pet_ct_button.setEnabled(True)
 
     def load_pet_ct(self, roi_color=None, iso_color=None, slice_view="axial",

@@ -27,7 +27,7 @@ class ImageFusionProgressWindow(ProgressWindow):
     def prompt_calc_dvh(self):
         """
         Windows displays buttons in a different order from Linux. A check for
-        platform is performed to ensure consistency of button positioning 
+        platform is performed to ensure consistency of button positioning
         across platforms.
         """
         message = "RTSTRUCT and RTDOSE datasets identified. Would you like to "

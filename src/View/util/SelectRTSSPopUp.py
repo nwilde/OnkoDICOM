@@ -11,7 +11,7 @@ from src.Controller.PathHandler import resource_path
 
 """
 This Class handles the RTSS Pop Up when users need to select a RTSS from a list
-of RTSSs attached to the selected image set to proceed.       
+of RTSSs attached to the selected image set to proceed.
 """
 
 
@@ -119,5 +119,3 @@ class SelectRTSSPopUp(QDialog):
         function to cancel the operation
         """
         self.close()
-
-

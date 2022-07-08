@@ -7,7 +7,6 @@ from PySide6.QtWidgets import QWidget, QTreeWidget, QTreeWidgetItem, QMessageBox
     QLabel, QLineEdit, QSizePolicy, QPushButton
 
 from src.Model import DICOMDirectorySearch
-from src.Model.PatientDictContainer import PatientDictContainer
 from src.Model.Worker import Worker
 from src.View.OpenPatientProgressWindow import OpenPatientProgressWindow
 from src.View.resources_open_patient_rc import *
@@ -204,7 +203,7 @@ class UIOpenPatientWindow(object):
 
         # Set the vertical box fourth element, the tree view, to stretch out as
         # far as possible
-        self.open_patient_window_instance_vertical_box.setStretch(3, 4) # Stretch the treeview out as far as possible
+        self.open_patient_window_instance_vertical_box.setStretch(3, 4)  # Stretch the treeview out as far as possible
         self.open_patient_window_instance_central_widget = QWidget()
         self.open_patient_window_instance_central_widget.setObjectName(
             "OpenPatientWindowInstanceCentralWidget")
@@ -242,8 +241,8 @@ class UIOpenPatientWindow(object):
                        "to load Patient's details:"))
         self.open_patient_directory_input_box.setPlaceholderText(
             _translate("OpenPatientWindowInstance",
-                       "Enter DICOM Files Path (For example, C:\path\\to\your"
-                       "\DICOM\Files)"))
+                       r"Enter DICOM Files Path (For example, C:\path\to\your"
+                       r"\DICOM\Files)"))
         self.open_patient_directory_choose_button.setText(
             _translate("OpenPatientWindowInstance", "Choose"))
         self.open_patient_directory_appear_prompt.setText(

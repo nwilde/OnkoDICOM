@@ -8,7 +8,7 @@ from PySide6.QtWidgets import QDialog, QLabel, QLineEdit, \
 from src.Controller.PathHandler import data_path, resource_path
 
 """
-This Class handles the ROI Pop Up functionalities       
+This Class handles the ROI Pop Up functionalities
 """
 
 

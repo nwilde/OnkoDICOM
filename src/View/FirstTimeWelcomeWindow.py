@@ -21,7 +21,8 @@ class UIFirstTimeWelcomeWindow(object):
             self.stylesheet_path = "res/stylesheet-win-linux.qss"
 
         window_icon = QtGui.QIcon()
-        window_icon.addPixmap(QtGui.QPixmap(resource_path("res/images/icon.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)  # adding icon
+        # Adding icon
+        window_icon.addPixmap(QtGui.QPixmap(resource_path("res/images/icon.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         first_time_welcome_window_instance.setObjectName("FirstTimeWelcomeWindowInstance")
         first_time_welcome_window_instance.setWindowIcon(window_icon)
         first_time_welcome_window_instance.setFixedSize(840, 530)
@@ -73,7 +74,7 @@ class UIFirstTimeWelcomeWindow(object):
         self.first_time_welcome_default_dir_prompt = QtWidgets.QLabel()
         self.first_time_welcome_default_dir_prompt.setObjectName("FirstTimeWelcomeWindowPrompt")
         self.first_time_welcome_default_dir_prompt.setAlignment(Qt.AlignLeft)
-        self.window_vertical_layout_box.addWidget(self.first_time_welcome_default_dir_prompt);
+        self.window_vertical_layout_box.addWidget(self.first_time_welcome_default_dir_prompt)
 
         # Create a horizontal box to hold the input box for the directory and the choose button
         self.first_time_welcome_input_horizontal_box = QHBoxLayout()
@@ -93,7 +94,7 @@ class UIFirstTimeWelcomeWindow(object):
         self.first_time_welcome_choose_button.setSizePolicy(
             QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
         self.first_time_welcome_choose_button.resize(self.first_time_welcome_choose_button.sizeHint().width(),
-                                                         self.first_time_welcome_input_box.height())
+                                                     self.first_time_welcome_input_box.height())
         self.first_time_welcome_choose_button.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.first_time_welcome_input_horizontal_box.addWidget(self.first_time_welcome_choose_button)
         self.first_time_welcome_choose_button.clicked.connect(self.choose_button_clicked)
@@ -104,7 +105,6 @@ class UIFirstTimeWelcomeWindow(object):
         self.first_time_welcome_input_widget.setLayout(self.first_time_welcome_input_horizontal_box)
         self.window_vertical_layout_box.addWidget(self.first_time_welcome_input_widget)
         self.window_vertical_layout_box.addStretch(1)
-
 
         # Create widgets for the clinical data CSV file path
         self.clinical_data_csv_dir_label = QtWidgets.QLabel()
@@ -208,12 +208,17 @@ class UIFirstTimeWelcomeWindow(object):
         _translate = QtCore.QCoreApplication.translate
         first_time_welcome_window_instance.setWindowTitle(
             _translate("FirstTimeWelcomeWindowInstance", "OnkoDICOM - First-time User Setting"))
-        self.first_time_welcome_message_label.setText(_translate("FirstTimeWelcomeWindowInstance", "Welcome to OnkoDICOM!"))
+        self.first_time_welcome_message_label.setText(_translate("FirstTimeWelcomeWindowInstance",
+                                                                 "Welcome to OnkoDICOM!"))
         self.first_time_welcome_message_slogan.setText(_translate("FirstTimeWelcomeWindowInstance",
-                                                      "OnkoDICOM - the solution for producing data for analysis from your oncology plans and scans."))
-        self.first_time_welcome_default_dir_prompt.setText(_translate("FirstTimeWelcomeWindowInstance","Choose the path of the default directory containing all DICOM files:"))
+                                                                  "OnkoDICOM - the solution for producing data for "
+                                                                  "analysis from your oncology plans and scans."))
+        self.first_time_welcome_default_dir_prompt.setText(_translate("FirstTimeWelcomeWindowInstance",
+                                                                      "Choose the path of the default directory "
+                                                                      "containing all DICOM files:"))
         self.first_time_welcome_input_box.setPlaceholderText(_translate("FirstTimeWelcomeWindowInstance",
-                                                                            "Enter DICOM Files Path (For example, C:\path\\to\your\DICOM\Files)"))
+                                                                        "Enter DICOM Files Path (For example, "
+                                                                        r"C:\path\to\your\DICOM\Files)"))
         self.first_time_welcome_choose_button.setText(_translate("FirstTimeWelcomeWindowInstance", "Choose"))
 
         # Clinical data CSV widgets
@@ -223,7 +228,7 @@ class UIFirstTimeWelcomeWindow(object):
         )
         self.clinical_data_csv_input_box.setPlaceholderText(
             _translate("FirstTimeWelcomeWindowInstance",
-                       "Enter CSV File Path (for example, C:\CSV\\file.csv)"))
+                       r"Enter CSV File Path (for example, C:\CSV\file.csv)"))
         self.clinical_data_csv_choose_button.setText(
             _translate("FirstTimeWelcomeWindowInstance", "Choose"))
 

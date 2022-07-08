@@ -1,5 +1,4 @@
 import platform
-import traceback
 
 import SimpleITK as sitk
 import numpy as np
@@ -436,7 +435,7 @@ class UITransferROIWindow:
         This function is to check if the transfer list is empty
         """
         return len(self.fixed_to_moving_rois) == 0 \
-               and len(self.moving_to_fixed_rois) == 0
+            and len(self.moving_to_fixed_rois) == 0
 
     def save_clicked(self, interrupt_flag, progress_callback):
         """
@@ -560,12 +559,12 @@ class UITransferROIWindow:
         if result[0] is True:
             if len(self.fixed_to_moving_rois) > 0:
                 self.signal_roi_transferred_to_moving_container.emit((
-                    self.moving_dict_container.get("dataset_rtss")
-                    , {"transfer": None}))
+                    self.moving_dict_container.get("dataset_rtss"),
+                    {"transfer": None}))
             if len(self.moving_to_fixed_rois) > 0:
                 self.signal_roi_transferred_to_fixed_container.emit((
-                    self.patient_dict_container.get("dataset_rtss")
-                    , {"transfer": None}))
+                    self.patient_dict_container.get("dataset_rtss"),
+                    {"transfer": None}))
             self.progress_window.close()
             QMessageBox.about(self.transfer_roi_window_instance, "Saved",
                               "ROIs are successfully transferred!")

@@ -9,7 +9,7 @@ class ImageFusionAxialView(DicomView):
                  metadata_formatted=False,
                  cut_line_color=None):
         """
-        metadata_formatted: whether the metadata needs to be formatted 
+        metadata_formatted: whether the metadata needs to be formatted
         (only metadata in the four view need to be formatted)
         """
         self.slice_view = 'axial'
@@ -131,7 +131,7 @@ class ImageFusionAxialView(DicomView):
 
     def format_metadata_margin(self):
         """
-        Update the margin of the metadata depending on the size of the 
+        Update the margin of the metadata depending on the size of the
         view and the scene.
         """
         if self.metadata_formatted:
@@ -156,7 +156,7 @@ class ImageFusionAxialView(DicomView):
 
     def format_metadata(self, size: QtCore.QSize):
         """
-        Update the font size of the meta data's labels depending on the 
+        Update the font size of the meta-data's labels depending on the
         StackedWidget's size.
         :param size: size of the StackedWidget used in the MainPage.
         """
@@ -183,7 +183,7 @@ class ImageFusionAxialView(DicomView):
     def update_view(self, zoom_change=False):
         """
         Update the view of the DICOM Image.
-        :param zoom_change: Boolean indicating whether the user wants 
+        :param zoom_change: Boolean indicating whether the user wants
         to change the zoom. False by default.
         """
         super().update_view(zoom_change)

@@ -433,7 +433,7 @@ class ImageFusionOptions(object):
 
     def check_parameter(self):
         """
-        Check the number of values of the smooth sigma and shrink factors of 
+        Check the number of values of the smooth sigma and shrink factors of
         that are parameters used for images fusion.
         """
         len_smooth_sigmas = len(self.dict["smooth_sigmas"])

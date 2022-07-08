@@ -13,7 +13,8 @@ class UIWelcomeWindow(object):
             self.stylesheet_path = "res/stylesheet-win-linux.qss"
         stylesheet = open(resource_path(self.stylesheet_path)).read()
         window_icon = QtGui.QIcon()
-        window_icon.addPixmap(QtGui.QPixmap(resource_path("res/images/icon.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off) # adding icon
+        # Adding icon
+        window_icon.addPixmap(QtGui.QPixmap(resource_path("res/images/icon.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         welcome_window_instance.setObjectName("WelcomeWindowInstance")
         welcome_window_instance.setWindowIcon(window_icon)
         welcome_window_instance.setFixedSize(840, 530)
@@ -91,7 +92,8 @@ class UIWelcomeWindow(object):
         welcome_window_instance.setWindowTitle(_translate("WelcomeWindowInstance", "OnkoDICOM"))
         self.welcome_window_label.setText(_translate("WelcomeWindowInstance", "Welcome to OnkoDICOM!"))
         self.welcome_window_slogan.setText(_translate("WelcomeWindowInstance",
-                                        "OnkoDICOM - the solution for producing data for analysis from your oncology plans and scans."))
+                                                      "OnkoDICOM - the solution for producing data for analysis from "
+                                                      "your oncology plans and scans."))
         self.open_patient_button.setText(_translate("WelcomeWindowInstance", "Individual Patient Curation"))
         self.open_batch_button.setText(_translate("WelcomeWindowInstance",
                                                   "Batch Processing"))

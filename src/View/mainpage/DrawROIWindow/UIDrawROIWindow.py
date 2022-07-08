@@ -861,8 +861,6 @@ class UIDrawROIWindow:
                           "New contour successfully created!")
         self.closeWindow()
 
-
-
     def onPreviewClicked(self):
         """
         function triggered when Preview button is clicked

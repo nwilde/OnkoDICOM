@@ -9,7 +9,7 @@ class ImageFusionSagittalView(DicomView):
                  metadata_formatted=False,
                  cut_line_color=None):
         """
-        metadata_formatted: whether the metadata needs to be formatted 
+        metadata_formatted: whether the metadata needs to be formatted
         (only metadata in the four view need to be formatted)
         """
         self.slice_view = 'sagittal'

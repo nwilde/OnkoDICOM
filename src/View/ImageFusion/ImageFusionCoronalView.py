@@ -1,4 +1,4 @@
-from PySide6 import QtWidgets, QtGui
+from PySide6 import QtWidgets
 from src.View.mainpage.DicomView import DicomView, GraphicsScene
 
 

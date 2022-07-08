@@ -49,8 +49,7 @@ class ISO2ROIOptions(QtWidgets.QWidget):
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
 
         # Set button class
-        self.add_new_roi.setProperty("QPushButtonClass",
-                                            "success-button")
+        self.add_new_roi.setProperty("QPushButtonClass", "success-button")
         self.delete_roi.setProperty("QPushButtonClass", "fail-button")
 
         # Set button stylesheet
@@ -59,10 +58,8 @@ class ISO2ROIOptions(QtWidgets.QWidget):
 
         # Set text
         _translate = QtCore.QCoreApplication.translate
-        self.add_new_roi.setText(_translate("Add_On_Options",
-                                                   "Add new Isodose"))
-        self.delete_roi.setText(_translate("Add_On_Options",
-                                                  "Remove Isodose"))
+        self.add_new_roi.setText(_translate("Add_On_Options", "Add new Isodose"))
+        self.delete_roi.setText(_translate("Add_On_Options", "Remove Isodose"))
 
         # Add buttons to the layout
         self.button_layout.addWidget(self.delete_roi)
@@ -215,8 +212,7 @@ class ISO2ROIOptions(QtWidgets.QWidget):
                 self.table_roi.removeRow(row - i)
                 i += 1
         else:
-            QtWidgets.QMessageBox.warning(self, "No Isodose Selected",
-                                "No isodose levels have been selected.")
+            QtWidgets.QMessageBox.warning(self, "No Isodose Selected", "No isodose levels have been selected.")
 
     def save_isodoses(self):
         """

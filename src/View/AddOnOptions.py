@@ -131,8 +131,7 @@ class UIAddOnOptions(object):
             self.change_default_directory_frame, 1, 0, 1, 3)
         self.option_layout.addWidget(self.clinical_data_csv_dir_frame,
                                      1, 0, 1, 3)
-        self.option_layout.addWidget(self.image_fusion_add_on_options \
-                                     .auto_image_fusion_frame, 1, 0, 1, 3)
+        self.option_layout.addWidget(self.image_fusion_add_on_options.auto_image_fusion_frame, 1, 0, 1, 3)
 
         # Add Label Widgets
         self.option_layout.addWidget(self.standard_organ_name_text, 1, 0, 1, 3)
@@ -295,6 +294,7 @@ class UIAddOnOptions(object):
 
             self.image_fusion_add_on_options.auto_image_fusion_frame \
                 .setVisible(True)
+
 
 class WindowingOptions(object):
     """

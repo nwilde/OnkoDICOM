@@ -49,7 +49,8 @@ class Dialog_Windowing(QDialog):
     def accepting(self):
 
         # Check that no mandatory input is empty
-        if self.name.text() != '' and self.scan_text.text() != '' and self.upper_level_text.text() != '' and self.lower_level_text.text() != '':
+        if self.name.text() != '' and self.scan_text.text() != '' and self.upper_level_text.text() != '' \
+                and self.lower_level_text.text() != '':
 
             # Check validation
             if re.match(r'^([\s\d]+)$', self.upper_level_text.text()) and re.match(r'^([\s\d]+)$',
@@ -171,21 +172,15 @@ class Dialog_Volume(QDialog):
         # Atleast one input field was left empty
         else:
             button_reply = QMessageBox.warning(self, "Error Message",
-                                              "None of the fields should be empty!", QMessageBox.Ok)
+                                               "None of the fields should be empty!", QMessageBox.Ok)
             if button_reply == QMessageBox.Ok:
                 pass
 
 
-#####################################################################################################################
-#                                                                                                                   #
-#   This class creates the user input dialog for when Modifying or Adding an ROI from ISODOSE                       #
-#                                                                                                                   #
-#####################################################################################################################
-
 class Dialog_Dose(QDialog):
     """
     This class creates the user input dialog for when Modifying or
-    Adding a isodose level option for ISO2ROI functionality.
+    Adding an isodose level option for ISO2ROI functionality.
     """
 
     def __init__(self, dose, notes):
