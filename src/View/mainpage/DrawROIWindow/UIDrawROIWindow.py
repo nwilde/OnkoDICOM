@@ -6,7 +6,7 @@ from PySide6.QtCore import Qt, QSize, QRegularExpression
 from PySide6.QtGui import QIcon, QPixmap, QRegularExpressionValidator
 from PySide6.QtWidgets import QFormLayout, QLabel, QLineEdit, \
     QSizePolicy, QHBoxLayout, QPushButton, QWidget, \
-    QMessageBox, QComboBox
+    QMessageBox, QComboBox, QGraphicsPixmapItem
 
 from src.Controller.MainPageController import MainPageCallClass
 from src.Controller.PathHandler import resource_path
@@ -14,8 +14,10 @@ from src.Model import ROI
 from src.Model.PatientDictContainer import PatientDictContainer
 from src.Model.ROI import calculate_concave_hull_of_points
 from src.View.mainpage.DicomAxialView import DicomAxialView
+from src.View.mainpage.DicomGraphicsScene import GraphicsScene
 from src.View.mainpage.DrawROIWindow.DrawBoundingBox import DrawBoundingBox
 from src.View.mainpage.DrawROIWindow.Drawing import Drawing
+from src.View.mainpage.DrawROIWindow.Fill import Fill
 from src.View.util.ProgressWindowHelper import connectSaveROIProgress
 from src.constants import INITIAL_DRAWING_TOOL_RADIUS
 
@@ -381,16 +383,28 @@ class UIDrawROIWindow:
             addRow(self.draw_roi_window_transect_draw_box)
 
         # Create a contour preview button
-        self.row_preview_layout = QtWidgets.QHBoxLayout()
+        self.row_layout = QtWidgets.QHBoxLayout()
         self.button_contour_preview = QtWidgets.QPushButton("Preview contour")
         self.button_contour_preview.clicked.connect(self.onPreviewClicked)
-        self.row_preview_layout.addWidget(self.button_contour_preview)
-        self.draw_roi_window_input_container_box. \
-            addRow(self.row_preview_layout)
+        self.row_layout.addWidget(self.button_contour_preview)
         icon_preview = QtGui.QIcon()
         icon_preview.addPixmap(QtGui.QPixmap(
             resource_path('res/images/btn-icons/preview_icon.png')))
         self.button_contour_preview.setIcon(icon_preview)
+
+        # TODO Reminder below
+        # Test fill
+        self.button_fill = QtWidgets.QPushButton("Fill")
+        self.button_fill.clicked.connect(self.on_fill_clicked)
+        self.row_layout.addWidget(self.button_fill)
+        self.draw_roi_window_input_container_box. \
+            addRow(self.row_layout)
+        # TODO ADD ICON
+        # icon_fill = QtGui.QIcon()
+        # icon_fill.addPixmap(QtGui.QPixmap(
+        #     resource_path('res/images/btn-icons/fill_icon.png')))
+        # self.button_fill.setIcon(icon_fill)
+        # TODO End
 
         # Create input line edit for alpha value
         self.label_alpha_value = QtWidgets.QLabel("Alpha value:")
@@ -739,6 +753,25 @@ class UIDrawROIWindow:
                 }
                 self.slice_changed = False
                 return True
+            # TODO NEW STUFF v
+            elif hasattr(self, 'fillROI') and self.fillROI \
+                    and self.ds is not None \
+                    and len(self.fillROI.target_pixel_coords) != 0:
+                alpha = float(self.input_alpha_value.text())
+                pixel_hull_list = calculate_concave_hull_of_points(
+                    self.fillROI.target_pixel_coords, alpha)
+                coord_list = []
+                for pixel_hull in pixel_hull_list:
+                    coord_list.append(pixel_hull)
+                print(coord_list)
+                self.drawn_roi_list[image_slice_number] = {
+                    'coords': coord_list,
+                    'ds': self.ds,
+                    'fillROI': self.fillROI
+                }
+                self.slice_changed = False
+                return True
+            # TODO NEW STUFF ^
         else:
             return True
 
@@ -802,7 +835,6 @@ class UIDrawROIWindow:
                     self.drawing_tool_radius,
                     self.keep_empty_pixel,
                     set()
-
                 )
                 self.slice_changed = True
                 self.dicom_view.view.setScene(self.drawingROI)
@@ -876,6 +908,38 @@ class UIDrawROIWindow:
         else:
             QMessageBox.about(self.draw_roi_window_instance, "Not Enough Data",
                               "Please ensure you have drawn your ROI first.")
+
+    # TODO new stuff here
+    def on_fill_clicked(self):
+        print("fill")
+        pixmaps = self.patient_dict_container.get("pixmaps_axial")
+
+        # Getting most updated selected slice
+        id = self.current_slice
+        dt = self.patient_dict_container.dataset[id]
+        dt.convert_pixel_data()
+
+        # Path to the selected .dcm file
+        location = self.patient_dict_container.filepaths[id]
+        self.ds = pydicom.dcmread(location)
+
+        self.fillROI = Fill(
+                    pixmaps[id],
+                    dt._pixel_array.transpose(),
+                    0,
+                    0,
+                    self.patient_dict_container.dataset[id],
+                    self.draw_roi_window_instance,
+                    self.slice_changed,
+                    self.current_slice,
+                    self.drawing_tool_radius,
+                    self.keep_empty_pixel,
+                    set()
+                )
+        self.slice_changed = True
+        self.dicom_view.view.setScene(self.fillROI)
+
+    # TODO end
 
     def set_selected_roi_name(self, roi_name):
         """
@@ -1042,5 +1106,9 @@ class UIDrawROIWindow:
             delattr(self, 'bounds_box_draw')
         if hasattr(self, 'drawingROI'):
             delattr(self, 'drawingROI')
+        # TODO NEW v
+        if hasattr(self, 'fillROI'):
+            delattr(self, 'fillROI')
+        # TODO NEW ^
         self.ds = None
         self.close()
