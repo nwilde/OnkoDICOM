@@ -23,7 +23,9 @@ from src.Controller.PathHandler import data_path, resource_path
 class StructureTab(QtWidgets.QWidget):
     request_update_structures = QtCore.Signal()
 
-    def __init__(self, moving=False):
+    # Note that we might get away with just passing the method
+    def __init__(self, main_page_window, moving=False):
+        self.main_page_window = main_page_window
         QtWidgets.QWidget.__init__(self)
         self.patient_dict_container = PatientDictContainer()
         self.moving_dict_container = MovingDictContainer()
@@ -166,7 +168,7 @@ class StructureTab(QtWidgets.QWidget):
             QtGui.QPixmap(resource_path('res/images/btn-icons/draw_icon.png')),
             QtGui.QIcon.Normal,
             QtGui.QIcon.On
-        )
+     )
 
         icon_roi_manipulate = QtGui.QIcon()
         icon_roi_manipulate.addPixmap(
@@ -239,7 +241,8 @@ class StructureTab(QtWidgets.QWidget):
         self.roi_delete_handler.show_roi_delete_options()
 
     def roi_draw_clicked(self):
-        self.roi_draw_handler.show_roi_draw_options()
+        self.main_page_window.on_draw_roi_clicked()
+        #self.roi_draw_handler.show_roi_draw_options()
 
     def roi_manipulate_clicked(self):
         """ Open ROI Manipulate Window """

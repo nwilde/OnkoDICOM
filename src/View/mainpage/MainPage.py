@@ -108,7 +108,7 @@ class UIMainWindow:
 
         self.patient_bar = PatientBar()
 
-        splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
+        self.splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
 
         # Left panel contains stuctures tab, isodoses tab,
         # and structure information
@@ -118,7 +118,7 @@ class UIMainWindow:
 
         # Add structures tab to left panel
         if not hasattr(self, 'structures_tab'):
-            self.structures_tab = StructureTab()
+            self.structures_tab = StructureTab(self)
             self.structures_tab.request_update_structures.connect(
                 self.update_views)
         else:
@@ -206,16 +206,30 @@ class UIMainWindow:
         # Add clinical data tab
         self.call_class.display_clinical_data(self.right_panel)
 
-        splitter.addWidget(self.left_panel)
-        splitter.addWidget(self.right_panel)
+        self.splitter.addWidget(self.left_panel)
+        self.splitter.addWidget(self.right_panel)
 
         # Create footer
         self.footer = QtWidgets.QWidget()
         self.create_footer()
 
+        #creating extra demo frame
+        self.demo_frame = QtWidgets.QFrame()
+        self.demo_frame.setMinimumSize(500, 600)
+
+        demo_layout = QVBoxLayout()
+        button_example = QtWidgets.QPushButton()
+        button_example.setText("demo frame button")
+        button_example.clicked.connect(self.on_draw_roi_clicked)
+        demo_layout.addWidget(button_example)
+
+        self.demo_frame.setLayout(demo_layout)
+        self.demo_frame.setVisible(False)
+
         # Set layout
         self.central_widget_layout.addWidget(self.patient_bar)
-        self.central_widget_layout.addWidget(splitter)
+        self.central_widget_layout.addWidget(self.splitter)
+        self.central_widget_layout.addWidget(self.demo_frame)
         self.central_widget_layout.addWidget(self.footer)
 
         self.central_widget.setLayout(self.central_widget_layout)
@@ -485,3 +499,9 @@ class UIMainWindow:
 
         # Close progress window
         self.suv2roi_progress_window.close()
+
+    def on_draw_roi_clicked(self):
+        flip = self.splitter.isVisible()
+        self.splitter.setVisible(not flip)
+        self.demo_frame.setVisible(flip)
+
