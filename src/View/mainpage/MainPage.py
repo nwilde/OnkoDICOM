@@ -529,7 +529,4 @@ class UIMainWindow:
         self.action_handler.windowing_window.setDisabled(disabled)
         self.action_handler.action_transect.setDisabled(disabled)
 
-        self.action_handler.action_one_view.setDisabled(disabled)
-        self.action_handler.action_four_views.setDisabled(disabled)
-        self.action_handler.action_show_cut_lines.setDisabled(disabled)
         self.action_handler.action_image_fusion.setDisabled(disabled)

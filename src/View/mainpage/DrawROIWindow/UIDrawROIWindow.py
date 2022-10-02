@@ -7,7 +7,7 @@ from PySide6.QtCore import Qt, QSize, QRegularExpression, Signal
 from PySide6.QtGui import QIcon, QPixmap, QRegularExpressionValidator
 from PySide6.QtWidgets import QFormLayout, QLabel, QLineEdit, \
     QSizePolicy, QHBoxLayout, QPushButton, QWidget, \
-    QMessageBox, QComboBox, QSlider
+    QMessageBox, QComboBox, QSlider, QGridLayout
 
 from src.Controller.MainPageController import MainPageCallClass
 from src.Controller.PathHandler import resource_path
@@ -15,11 +15,15 @@ from src.Model import ROI
 from src.Model.PatientDictContainer import PatientDictContainer
 from src.Model.ROI import calculate_concave_hull_of_points
 from src.View.mainpage.DicomAxialView import DicomAxialView
+from src.View.mainpage.DicomCoronalView import DicomCoronalView
+from src.View.mainpage.DicomSagittalView import DicomSagittalView
+from src.View.mainpage.DicomStackedWidget import DicomStackedWidget
+from src.View.mainpage.DicomView3D import DicomView3D
 from src.View.mainpage.DrawROIWindow.DrawBoundingBox import DrawBoundingBox
 from src.View.mainpage.DrawROIWindow.Drawing import Drawing
 from src.View.mainpage.DrawROIWindow.SelectROIPopUp import SelectROIPopUp
 from src.View.util.ProgressWindowHelper import connectSaveROIProgress
-from src.constants import INITIAL_DRAWING_TOOL_RADIUS
+from src.constants import INITIAL_DRAWING_TOOL_RADIUS, INITIAL_FOUR_VIEW_ZOOM
 
 
 class UIDrawROIWindow:
@@ -68,12 +72,83 @@ class UIDrawROIWindow:
         self.lower_limit = None
 
         # is_four_view is set to True to stop the SUV2ROI button from appearing
-        self.dicom_view = DicomAxialView(is_four_view=True)
-        self.current_slice = self.dicom_view.slider.value()
-        self.dicom_view.slider.valueChanged.connect(self.slider_value_changed)
+        self.dicom_axial_view = DicomAxialView(is_four_view=True,metadata_formatted=True, cut_line_color=QtGui.QColor(255, 0, 0))
+        self.current_slice = self.dicom_axial_view.slider.value()
+        self.dicom_axial_view.slider.valueChanged.connect(self.slider_value_changed)
+
+        self.dicom_sagittal_view = DicomSagittalView(
+            cut_line_color=QtGui.QColor(0, 255, 0))
+        self.dicom_coronal_view = DicomCoronalView(
+            cut_line_color=QtGui.QColor(0, 0, 255))
+        self.three_dimension_view = DicomView3D()
+
+        # Rescale the size of the scenes inside the 3-slice views
+        self.dicom_axial_view.zoom = INITIAL_FOUR_VIEW_ZOOM
+        self.dicom_sagittal_view.zoom = INITIAL_FOUR_VIEW_ZOOM
+        self.dicom_coronal_view.zoom = INITIAL_FOUR_VIEW_ZOOM
+        self.dicom_axial_view.update_view(zoom_change=True)
+        self.dicom_sagittal_view.update_view(zoom_change=True)
+        self.dicom_coronal_view.update_view(zoom_change=True)
+
+        self.dicom_four_views = QWidget()
+        self.dicom_four_views_layout = QGridLayout()
+        for i in range(2):
+            self.dicom_four_views_layout.setColumnStretch(i, 1)
+            self.dicom_four_views_layout.setRowStretch(i, 1)
+        self.dicom_four_views_layout.addWidget(self.dicom_sagittal_view, 0, 1)
+        self.dicom_four_views_layout.addWidget(self.dicom_coronal_view, 1, 0)
+        self.dicom_four_views_layout.addWidget(self.three_dimension_view, 1, 1)
+        self.dicom_four_views.setLayout(self.dicom_four_views_layout)
+
+        self.dicom_single_view = QWidget()
+        self.dicom_single_view_layout = QGridLayout()
+        self.dicom_single_view_layout.addWidget(self.dicom_axial_view,0,0)
+        self.dicom_single_view.setLayout(self.dicom_single_view_layout)
+
+
+        self.dicom_view = DicomStackedWidget(self.dicom_axial_view.format_metadata)
+        self.dicom_view.addWidget(self.dicom_four_views)
+        self.dicom_view.addWidget(self.dicom_single_view)
+        self.dicom_view.setCurrentWidget(self.dicom_single_view)
+
+
+
         self.init_layout()
 
         QtCore.QMetaObject.connectSlotsByName(draw_roi_window_instance)
+
+    def set_four_view(self, four_view):
+        """
+        Sets four view layout when triggered with True boolean, Otherwise it will set it to the original single view
+        """
+        if four_view:
+            self.dicom_four_views_layout.addWidget(self.dicom_axial_view, 0, 0)
+            self.dicom_view.setCurrentWidget(self.dicom_four_views)
+        else:
+            self.dicom_single_view_layout.addWidget(self.dicom_axial_view, 0, 0)
+            self.dicom_view.setCurrentWidget(self.dicom_single_view)
+
+    def toggle_cut_lines(self):
+        """
+        Note that this will display the cut lines, however the drawn ROI is not shown due to the weird way it works
+        will have to update.
+        """
+        if self.dicom_axial_view.horizontal_view is None or \
+                self.dicom_axial_view.vertical_view is None or \
+                self.dicom_coronal_view.horizontal_view is None or \
+                self.dicom_coronal_view.vertical_view is None or \
+                self.dicom_sagittal_view.horizontal_view is None or \
+                self.dicom_sagittal_view.vertical_view is None:
+            self.dicom_axial_view.set_views(self.dicom_coronal_view,
+                                            self.dicom_sagittal_view)
+            self.dicom_coronal_view.set_views(self.dicom_axial_view,
+                                              self.dicom_sagittal_view)
+            self.dicom_sagittal_view.set_views(self.dicom_axial_view,
+                                               self.dicom_coronal_view)
+        else:
+            self.dicom_axial_view.set_views(None, None)
+            self.dicom_coronal_view.set_views(None, None)
+            self.dicom_sagittal_view.set_views(None, None)
 
     def retranslate_ui(self, draw_roi_window_instance):
         """
@@ -93,7 +168,7 @@ class UIDrawROIWindow:
             _translate("ImageSliceNumberLabel", "Slice Number: "))
         self.image_slice_number_line_edit.setText(
             _translate("ImageSliceNumberLineEdit",
-                       str(self.dicom_view.current_slice_number)))
+                       str(self.dicom_axial_view.current_slice_number)))
         self.image_slice_number_transect_button.setText(
             _translate("ImageSliceNumberTransectButton", "Transect"))
         self.image_slice_number_box_draw_button.setText(
@@ -618,7 +693,7 @@ class UIDrawROIWindow:
         image_slice_number = self.current_slice
         # save progress
         self.save_drawing_progress(image_slice_number)
-        self.set_current_slice(self.dicom_view.slider.value())
+        self.set_current_slice(self.dicom_axial_view.slider.value())
 
     def set_current_slice(self, slice_number):
         """
@@ -627,14 +702,14 @@ class UIDrawROIWindow:
         """
         self.image_slice_number_line_edit.setText(str(slice_number + 1))
         self.current_slice = slice_number
-        self.dicom_view.update_view()
+        self.dicom_axial_view.update_view()
 
         # check if this slice has any drawings before
         if self.drawn_roi_list.get(self.current_slice) is not None:
             self.drawingROI = self.drawn_roi_list[
                 self.current_slice]['drawingROI']
             self.ds = self.drawn_roi_list[self.current_slice]['ds']
-            self.dicom_view.view.setScene(self.drawingROI)
+            self.dicom_axial_view.view.setScene(self.drawingROI)
             self.enable_cursor_diameter_change_box()
             self.drawingROI.clear_cursor(self.drawing_tool_radius)
             self.has_drawing = True
@@ -648,26 +723,26 @@ class UIDrawROIWindow:
         """
         This function is used for zooming in button
         """
-        self.dicom_view.zoom *= 1.05
-        self.dicom_view.update_view(zoom_change=True)
+        self.dicom_axial_view.zoom *= 1.05
+        self.dicom_axial_view.update_view(zoom_change=True)
         if hasattr(self, 'drawingROI') and self.drawingROI \
                 and self.drawingROI.current_slice == self.current_slice:
-            self.dicom_view.view.setScene(self.drawingROI)
+            self.dicom_axial_view.view.setScene(self.drawingROI)
         self.draw_roi_window_viewport_zoom_input.setText(
-            "{:.2f}".format(self.dicom_view.zoom * 100) + "%")
+            "{:.2f}".format(self.dicom_axial_view.zoom * 100) + "%")
         self.draw_roi_window_viewport_zoom_input.setCursorPosition(0)
 
     def onZoomOutClicked(self):
         """
         This function is used for zooming out button
         """
-        self.dicom_view.zoom /= 1.05
-        self.dicom_view.update_view(zoom_change=True)
+        self.dicom_axial_view.zoom /= 1.05
+        self.dicom_axial_view.update_view(zoom_change=True)
         if hasattr(self, 'drawingROI') and self.drawingROI \
                 and self.drawingROI.current_slice == self.current_slice:
-            self.dicom_view.view.setScene(self.drawingROI)
+            self.dicom_axial_view.view.setScene(self.drawingROI)
         self.draw_roi_window_viewport_zoom_input. \
-            setText("{:.2f}".format(self.dicom_view.zoom * 100) + "%")
+            setText("{:.2f}".format(self.dicom_axial_view.zoom * 100) + "%")
         self.draw_roi_window_viewport_zoom_input.setCursorPosition(0)
 
     def transparency_slider_value_changed(self):
@@ -695,7 +770,7 @@ class UIDrawROIWindow:
             if int(image_slice_number) > 0:
                 # decrements slice by 1 and update slider to move to correct
                 # position
-                self.dicom_view.slider.setValue(image_slice_number - 1)
+                self.dicom_axial_view.slider.setValue(image_slice_number - 1)
 
     def onForwardClicked(self):
         """
@@ -712,14 +787,14 @@ class UIDrawROIWindow:
             if int(image_slice_number) < total_slices:
                 # increments slice by 1 and update slider to move to correct
                 # position
-                self.dicom_view.slider.setValue(image_slice_number + 1)
+                self.dicom_axial_view.slider.setValue(image_slice_number + 1)
 
     def onResetClicked(self):
         """
         This function is used when reset button is clicked
         """
-        self.dicom_view.image_display()
-        self.dicom_view.update_view()
+        self.dicom_axial_view.image_display()
+        self.dicom_axial_view.update_view()
         self.isthmus_width_max_line_edit.setText("5")
         self.internal_hole_max_line_edit.setText("9")
         self.min_pixel_density_line_edit.setText("")
@@ -744,7 +819,7 @@ class UIDrawROIWindow:
         dt.convert_pixel_data()
         MainPageCallClass().run_transect(
             self.draw_roi_window_instance,
-            self.dicom_view.view,
+            self.dicom_axial_view.view,
             pixmaps[id],
             dt._pixel_array.transpose(),
             rowS,
@@ -788,7 +863,7 @@ class UIDrawROIWindow:
             self.min_pixel_density_line_edit.setText(str(self.lower_limit))
             self.max_pixel_density_line_edit.setText(str(self.upper_limit))
 
-        self.dicom_view.update_view()
+        self.dicom_axial_view.update_view()
 
     def onDrawClicked(self):
         """
@@ -878,7 +953,7 @@ class UIDrawROIWindow:
                 )
                 self.slice_changed = True
                 self.has_drawing = True
-                self.dicom_view.view.setScene(self.drawingROI)
+                self.dicom_axial_view.view.setScene(self.drawingROI)
                 self.enable_cursor_diameter_change_box()
             else:
                 QMessageBox.about(self.draw_roi_window_instance,
@@ -896,7 +971,7 @@ class UIDrawROIWindow:
         pixmaps = self.patient_dict_container.get("pixmaps_axial")
 
         self.bounds_box_draw = DrawBoundingBox(pixmaps[id], dt)
-        self.dicom_view.view.setScene(self.bounds_box_draw)
+        self.dicom_axial_view.view.setScene(self.bounds_box_draw)
         self.disable_cursor_diameter_change_box()
         self.has_drawing = False
 

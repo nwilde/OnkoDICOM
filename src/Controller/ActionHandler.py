@@ -385,6 +385,9 @@ class ActionHandler:
                     self.__main_page.image_fusion_single_view)
                 self.__main_page.image_fusion_single_view.update_view()
 
+        if hasattr(self.__main_page, 'draw_roi'):
+            self.__main_page.draw_roi.set_four_view(False)
+
     def four_views_handler(self):
         self.is_four_view = True
 
@@ -401,8 +404,14 @@ class ActionHandler:
                     self.__main_page.image_fusion_four_views)
                 self.__main_page.image_fusion_view_axial.update_view()
 
+        if hasattr(self.__main_page, 'draw_roi'):
+            self.__main_page.draw_roi.set_four_view(True)
+
     def cut_lines_handler(self):
         self.__main_page.toggle_cut_lines()
+
+        if hasattr(self.__main_page, 'draw_roi'):
+            self.__main_page.draw_roi.toggle_cut_lines()
 
     def export_dvh_handler(self):
         if self.patient_dict_container.has_attribute("raw_dvh"):
