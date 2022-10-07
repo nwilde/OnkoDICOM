@@ -8,6 +8,7 @@ class DicomStackedWidget(QtWidgets.QStackedWidget):
 
     def __init__(self, format_metadata):
         super(DicomStackedWidget, self).__init__()
+        self.view = None
         self.format_metadata = format_metadata
 
     def resizeEvent(self, event: QtGui.QResizeEvent) -> None:

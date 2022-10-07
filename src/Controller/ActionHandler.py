@@ -8,6 +8,7 @@ from src.Model.PTCTDictContainer import PTCTDictContainer
 from src.Controller.PathHandler import resource_path
 from src.View.WindowingUI import Windowing
 from src.Model.Windowing import windowing_model
+from src.constants import INITIAL_FOUR_VIEW_ZOOM, INITIAL_ONE_VIEW_ZOOM
 
 
 class ActionHandler:
@@ -373,48 +374,65 @@ class ActionHandler:
         self.__main_page.add_on_options_controller.show_add_on_options()
 
     def one_view_handler(self):
-        self.is_four_view = False
-
-        self.__main_page.dicom_view.setCurrentWidget(
-            self.__main_page.dicom_single_view)
-        self.__main_page.dicom_single_view.update_view()
-
-        if hasattr(self.__main_page, 'image_fusion_view'):
-            self.has_image_registration_four = False
-            self.has_image_registration_single = True
-            if isinstance(self.__main_page.image_fusion_single_view,
-                          ImageFusionAxialView):
-                self.__main_page.image_fusion_view.setCurrentWidget(
-                    self.__main_page.image_fusion_single_view)
-                self.__main_page.image_fusion_single_view.update_view()
-
         if hasattr(self.__main_page, 'draw_roi'):
+            self.__main_page.draw_roi.dicom_axial_view.set_views(None, None)
+            self.__main_page.draw_roi.dicom_coronal_view.set_views(None, None)
+            self.__main_page.draw_roi.dicom_sagittal_view.set_views(None, None)
+            self.__main_page.draw_roi.dicom_axial_view.zoom = INITIAL_ONE_VIEW_ZOOM
+            self.__main_page.draw_roi.dicom_coronal_view.zoom = INITIAL_ONE_VIEW_ZOOM
+            self.__main_page.draw_roi.dicom_sagittal_view.zoom = INITIAL_ONE_VIEW_ZOOM
+            self.__main_page.draw_roi.dicom_axial_view.update_view(zoom_change=True)
+            self.__main_page.draw_roi.dicom_coronal_view.update_view(zoom_change=True)
+            self.__main_page.draw_roi.dicom_sagittal_view.update_view(zoom_change=True)
+            self.__main_page.draw_roi.on_zoom_update()
             self.__main_page.draw_roi.set_four_view(False)
+        else:
+            self.is_four_view = False
+
+            self.__main_page.dicom_view.setCurrentWidget(
+                self.__main_page.dicom_single_view)
+            self.__main_page.dicom_single_view.update_view()
+
+            if hasattr(self.__main_page, 'image_fusion_view'):
+                self.has_image_registration_four = False
+                self.has_image_registration_single = True
+                if isinstance(self.__main_page.image_fusion_single_view,
+                              ImageFusionAxialView):
+                    self.__main_page.image_fusion_view.setCurrentWidget(
+                        self.__main_page.image_fusion_single_view)
+                    self.__main_page.image_fusion_single_view.update_view()
 
     def four_views_handler(self):
-        self.is_four_view = True
-
-        self.__main_page.dicom_view.setCurrentWidget(
-            self.__main_page.dicom_four_views)
-        self.__main_page.dicom_axial_view.update_view()
-
-        if hasattr(self.__main_page, 'image_fusion_view'):
-            self.has_image_registration_four = True
-            self.has_image_registration_single = False
-            if isinstance(self.__main_page.image_fusion_view,
-                          QStackedWidget):
-                self.__main_page.image_fusion_view.setCurrentWidget(
-                    self.__main_page.image_fusion_four_views)
-                self.__main_page.image_fusion_view_axial.update_view()
-
         if hasattr(self.__main_page, 'draw_roi'):
+            self.__main_page.draw_roi.dicom_axial_view.zoom = INITIAL_FOUR_VIEW_ZOOM
+            self.__main_page.draw_roi.dicom_coronal_view.zoom = INITIAL_FOUR_VIEW_ZOOM
+            self.__main_page.draw_roi.dicom_sagittal_view.zoom = INITIAL_FOUR_VIEW_ZOOM
+            self.__main_page.draw_roi.dicom_axial_view.update_view(zoom_change=True)
+            self.__main_page.draw_roi.dicom_coronal_view.update_view(zoom_change=True)
+            self.__main_page.draw_roi.dicom_sagittal_view.update_view(zoom_change=True)
+            self.__main_page.draw_roi.on_zoom_update()
             self.__main_page.draw_roi.set_four_view(True)
+        else:
+            self.is_four_view = True
+
+            self.__main_page.dicom_view.setCurrentWidget(
+                self.__main_page.dicom_four_views)
+            self.__main_page.dicom_axial_view.update_view()
+
+            if hasattr(self.__main_page, 'image_fusion_view'):
+                self.has_image_registration_four = True
+                self.has_image_registration_single = False
+                if isinstance(self.__main_page.image_fusion_view,
+                              QStackedWidget):
+                    self.__main_page.image_fusion_view.setCurrentWidget(
+                        self.__main_page.image_fusion_four_views)
+                    self.__main_page.image_fusion_view_axial.update_view()
 
     def cut_lines_handler(self):
-        self.__main_page.toggle_cut_lines()
-
         if hasattr(self.__main_page, 'draw_roi'):
             self.__main_page.draw_roi.toggle_cut_lines()
+        else:
+            self.__main_page.toggle_cut_lines()
 
     def export_dvh_handler(self):
         if self.patient_dict_container.has_attribute("raw_dvh"):

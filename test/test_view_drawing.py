@@ -80,9 +80,6 @@ def test_draw_roi_window_displayed(qtbot, test_object):
 
     menu_items = [test_object.main_window.action_handler.action_save_structure,
                   test_object.main_window.action_handler.action_save_as_anonymous,
-                  test_object.main_window.action_handler.action_one_view,
-                  test_object.main_window.action_handler.action_four_views,
-                  test_object.main_window.action_handler.action_show_cut_lines,
                   test_object.main_window.action_handler.action_image_fusion
                   ]
 
@@ -150,7 +147,7 @@ def test_roi_windowing(qtbot, test_object):
     existing_window = draw_roi_window.patient_dict_container.get("window")
     existing_level = draw_roi_window.patient_dict_container.get("level")
     existing_pixmaps = draw_roi_window.patient_dict_container.get("pixmaps_axial")
-    existing_view = draw_roi_window.dicom_view.scene
+    existing_view = draw_roi_window.dicom_axial_view.scene
 
     # changing windowing type directly via handler
     test_object.main_window.action_handler.windowing_handler(None, "Lung")
@@ -158,7 +155,7 @@ def test_roi_windowing(qtbot, test_object):
     new_window = draw_roi_window.patient_dict_container.get("window")
     new_level = draw_roi_window.patient_dict_container.get("level")
     new_pixmaps = draw_roi_window.patient_dict_container.get("pixmaps_axial")
-    new_view = draw_roi_window.dicom_view.scene
+    new_view = draw_roi_window.dicom_axial_view.scene
 
     # assert that the values have been updated
     assert existing_window != new_window
@@ -166,4 +163,4 @@ def test_roi_windowing(qtbot, test_object):
     assert existing_pixmaps != new_pixmaps
     assert existing_view != new_view
 
-    assert draw_roi_window.dicom_view.label_wl.text() == f"W/L: {str(new_window)}/{str(new_level)}"
+    assert draw_roi_window.dicom_axial_view.label_wl.text() == f"W/L: {str(new_window)}/{str(new_level)}"

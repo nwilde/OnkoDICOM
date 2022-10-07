@@ -23,7 +23,7 @@ from src.View.mainpage.DrawROIWindow.DrawBoundingBox import DrawBoundingBox
 from src.View.mainpage.DrawROIWindow.Drawing import Drawing
 from src.View.mainpage.DrawROIWindow.SelectROIPopUp import SelectROIPopUp
 from src.View.util.ProgressWindowHelper import connectSaveROIProgress
-from src.constants import INITIAL_DRAWING_TOOL_RADIUS, INITIAL_FOUR_VIEW_ZOOM
+from src.constants import INITIAL_DRAWING_TOOL_RADIUS, INITIAL_FOUR_VIEW_ZOOM, INITIAL_ONE_VIEW_ZOOM
 
 
 class UIDrawROIWindow:
@@ -64,7 +64,6 @@ class UIDrawROIWindow:
         self.draw_roi_window_instance = draw_roi_window_instance
         self.colour = None
         self.ds = None
-        self.zoom = 1.0
         self.pixel_transparency = 0.50
         self.has_drawing = False
 
@@ -83,9 +82,9 @@ class UIDrawROIWindow:
         self.three_dimension_view = DicomView3D()
 
         # Rescale the size of the scenes inside the 3-slice views
-        self.dicom_axial_view.zoom = INITIAL_FOUR_VIEW_ZOOM
-        self.dicom_sagittal_view.zoom = INITIAL_FOUR_VIEW_ZOOM
-        self.dicom_coronal_view.zoom = INITIAL_FOUR_VIEW_ZOOM
+        self.dicom_axial_view.zoom = INITIAL_ONE_VIEW_ZOOM
+        self.dicom_sagittal_view.zoom = INITIAL_ONE_VIEW_ZOOM
+        self.dicom_coronal_view.zoom = INITIAL_ONE_VIEW_ZOOM
         self.dicom_axial_view.update_view(zoom_change=True)
         self.dicom_sagittal_view.update_view(zoom_change=True)
         self.dicom_coronal_view.update_view(zoom_change=True)
@@ -105,13 +104,10 @@ class UIDrawROIWindow:
         self.dicom_single_view_layout.addWidget(self.dicom_axial_view,0,0)
         self.dicom_single_view.setLayout(self.dicom_single_view_layout)
 
-
         self.dicom_view = DicomStackedWidget(self.dicom_axial_view.format_metadata)
         self.dicom_view.addWidget(self.dicom_four_views)
         self.dicom_view.addWidget(self.dicom_single_view)
         self.dicom_view.setCurrentWidget(self.dicom_single_view)
-
-
 
         self.init_layout()
 
@@ -330,7 +326,7 @@ class UIDrawROIWindow:
         self.draw_roi_window_viewport_zoom_input. \
             setObjectName("DrawRoiWindowViewportZoomInput")
         self.draw_roi_window_viewport_zoom_input. \
-            setText("{:.2f}".format(self.zoom * 100) + "%")
+            setText("{:.2f}".format(self.dicom_axial_view.zoom * 100) + "%")
         self.draw_roi_window_viewport_zoom_input.setCursorPosition(0)
         self.draw_roi_window_viewport_zoom_input.setEnabled(False)
         self.draw_roi_window_viewport_zoom_input. \
@@ -727,7 +723,9 @@ class UIDrawROIWindow:
         """
         logging.debug("update_draw_roi_pixmaps started")
         self.save_drawing_progress(self.current_slice)
-        self.dicom_view.update_view()
+        self.dicom_axial_view.update_view()
+        self.dicom_coronal_view.update_view()
+        self.dicom_sagittal_view.update_view()
 
         # for each drawn ROI slice
         for slice_number in self.drawn_roi_list:
@@ -737,27 +735,27 @@ class UIDrawROIWindow:
                 slice_drawing_roi.update_dicom_image()
 
         if hasattr(self, 'drawingROI') and self.drawingROI:
-            self.dicom_view.view.setScene(self.drawingROI)
+            self.dicom_axial_view.view.setScene(self.drawingROI)
 
     def onZoomInClicked(self):
         """
         This function is used for zooming in button
         """
-        self.dicom_axial_view.zoom *= 1.05
-        self.dicom_axial_view.update_view(zoom_change=True)
-        if hasattr(self, 'drawingROI') and self.drawingROI \
-                and self.drawingROI.current_slice == self.current_slice:
-            self.dicom_axial_view.view.setScene(self.drawingROI)
-        self.draw_roi_window_viewport_zoom_input.setText(
-            "{:.2f}".format(self.dicom_axial_view.zoom * 100) + "%")
-        self.draw_roi_window_viewport_zoom_input.setCursorPosition(0)
+        self.dicom_axial_view.zoom_in()
+        self.dicom_coronal_view.zoom_in()
+        self.dicom_sagittal_view.zoom_in()
+        self.on_zoom_update()
 
     def onZoomOutClicked(self):
         """
         This function is used for zooming out button
         """
-        self.dicom_axial_view.zoom /= 1.05
-        self.dicom_axial_view.update_view(zoom_change=True)
+        self.dicom_axial_view.zoom_out()
+        self.dicom_coronal_view.zoom_out()
+        self.dicom_sagittal_view.zoom_out()
+        self.on_zoom_update()
+
+    def on_zoom_update(self):
         if hasattr(self, 'drawingROI') and self.drawingROI \
                 and self.drawingROI.current_slice == self.current_slice:
             self.dicom_axial_view.view.setScene(self.drawingROI)
