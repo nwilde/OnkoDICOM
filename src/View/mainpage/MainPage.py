@@ -279,6 +279,10 @@ class UIMainWindow:
                 self.image_fusion_view_coronal.update_view()
                 self.image_fusion_view_sagittal.update_view()
 
+        if hasattr(self, 'draw_roi'):
+            if self.draw_roi is not None:
+                self.draw_roi.update_draw_roi_pixmaps()
+
     def toggle_cut_lines(self):
         if self.dicom_axial_view.horizontal_view is None or \
                 self.dicom_axial_view.vertical_view is None or \
@@ -328,23 +332,26 @@ class UIMainWindow:
         or the single view depending on what view is showing on screen.
         is_four_view: Whether the four view is showing
         """
-        if is_four_view:
-            self.dicom_axial_view.zoom_in()
-            self.dicom_coronal_view.zoom_in()
-            self.dicom_sagittal_view.zoom_in()
+        if hasattr(self, 'draw_roi') and self.draw_roi:
+            self.draw_roi.onZoomInClicked()
         else:
-            self.dicom_single_view.zoom_in()
+            if is_four_view:
+                self.dicom_axial_view.zoom_in()
+                self.dicom_coronal_view.zoom_in()
+                self.dicom_sagittal_view.zoom_in()
+            else:
+                self.dicom_single_view.zoom_in()
 
-        if image_reg_single:
-            self.image_fusion_single_view.zoom_in()
+            if image_reg_single:
+                self.image_fusion_single_view.zoom_in()
 
-        if image_reg_four:
-            self.image_fusion_view_axial.zoom_in()
-            self.image_fusion_view_coronal.zoom_in()
-            self.image_fusion_view_sagittal.zoom_in()
+            if image_reg_four:
+                self.image_fusion_view_axial.zoom_in()
+                self.image_fusion_view_coronal.zoom_in()
+                self.image_fusion_view_sagittal.zoom_in()
 
-        if self.pet_ct_tab.initialised:
-            self.pet_ct_tab.zoom_in()
+            if self.pet_ct_tab.initialised:
+                self.pet_ct_tab.zoom_in()
 
     def zoom_out(self, is_four_view, image_reg_single, image_reg_four):
         """
@@ -352,23 +359,26 @@ class UIMainWindow:
         views or the single view depending on what view is showing on screen.
         is_four_view: Whether the four view is showing
         """
-        if is_four_view:
-            self.dicom_axial_view.zoom_out()
-            self.dicom_coronal_view.zoom_out()
-            self.dicom_sagittal_view.zoom_out()
+        if hasattr(self, 'draw_roi') and self.draw_roi:
+            self.draw_roi.onZoomOutClicked()
         else:
-            self.dicom_single_view.zoom_out()
+            if is_four_view:
+                self.dicom_axial_view.zoom_out()
+                self.dicom_coronal_view.zoom_out()
+                self.dicom_sagittal_view.zoom_out()
+            else:
+                self.dicom_single_view.zoom_out()
 
-        if image_reg_single:
-            self.image_fusion_single_view.zoom_out()
+            if image_reg_single:
+                self.image_fusion_single_view.zoom_out()
 
-        if image_reg_four:
-            self.image_fusion_view_axial.zoom_out()
-            self.image_fusion_view_coronal.zoom_out()
-            self.image_fusion_view_sagittal.zoom_out()
+            if image_reg_four:
+                self.image_fusion_view_axial.zoom_out()
+                self.image_fusion_view_coronal.zoom_out()
+                self.image_fusion_view_sagittal.zoom_out()
 
-        if self.pet_ct_tab.initialised:
-            self.pet_ct_tab.zoom_out()
+            if self.pet_ct_tab.initialised:
+                self.pet_ct_tab.zoom_out()
 
     def format_data(self, size):
         """
@@ -509,24 +519,19 @@ class UIMainWindow:
         self.draw_roi_toggle_toolbar_items(True)
 
     def remove_draw_roi_instance(self):
-        """removes the draw roi instance from the main window, also removing the instance from the ROIDrawOption controller"""
+        """removes the draw roi instance from the main window,
+        also removing the instance from the ROIDrawOption controller"""
         logging.debug("remove_draw_roi_instance started")
 
         self.roi_draw_handler.remove_roi_draw_window()
         self.main_content.removeWidget(self.draw_roi)
+        delattr(self, 'draw_roi')
         self.draw_roi_toggle_toolbar_items(False)
         self.splitter.setVisible(True)
-
 
     def draw_roi_toggle_toolbar_items(self, disabled):
         """Called to disable toolbar options when they do not apply / cannot be used in the current draw roi context"""
         self.action_handler.action_save_structure.setDisabled(disabled)
         self.action_handler.action_save_as_anonymous.setDisabled(disabled)
-
-        self.action_handler.action_zoom_out.setDisabled(disabled)
-        self.action_handler.action_zoom_in.setDisabled(disabled)
-        self.action_handler.menu_windowing.setDisabled(disabled)
-        self.action_handler.windowing_window.setDisabled(disabled)
-        self.action_handler.action_transect.setDisabled(disabled)
 
         self.action_handler.action_image_fusion.setDisabled(disabled)
