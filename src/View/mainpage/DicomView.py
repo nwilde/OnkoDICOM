@@ -5,6 +5,21 @@ from src.Model.PatientDictContainer import PatientDictContainer
 from src.constants import INITIAL_ONE_VIEW_ZOOM
 from src.Controller.PathHandler import data_path
 
+class CustomGraphicsView(QtWidgets.QGraphicsView):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        # self.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag)
+
+    def wheelEvent(self, event: QtGui.QWheelEvent):
+        modifiers = event.modifiers()
+        if modifiers == QtCore.Qt.ShiftModifier:
+            super().wheelEvent(event)
+        elif modifiers == QtCore.Qt.AltModifier:
+            super().wheelEvent(event)
+        elif modifiers == QtCore.Qt.ControlModifier:
+            event.ignore()
+        else:
+            event.ignore()
 
 class DicomView(QtWidgets.QWidget):
 
@@ -19,11 +34,12 @@ class DicomView(QtWidgets.QWidget):
         self.vertical_view = None
         self.cut_lines_color = cut_line_color
         self.dicom_view_layout = QtWidgets.QHBoxLayout()
+        self.windowing_slider = None
 
         # Create components
         self.slider = QtWidgets.QSlider(QtCore.Qt.Vertical)
         self.init_slider()
-        self.view = QtWidgets.QGraphicsView()
+        self.view = CustomGraphicsView()
         self.init_view()
         self.scene = QtWidgets.QGraphicsScene()
 
@@ -53,12 +69,48 @@ class DicomView(QtWidgets.QWidget):
         background_brush = QtGui.QBrush(
             QtGui.QColor(0, 0, 0), QtCore.Qt.SolidPattern)
         self.view.setBackgroundBrush(background_brush)
+    
+    def wheelEvent(self, event: QtGui.QWheelEvent):
+        degree = 8
+        step = 15
+        #https://doc.qt.io/qt-6/qwheelevent.html#angleDelta
+        modifiers = event.modifiers()
+        if modifiers == QtCore.Qt.ShiftModifier:
+            super().wheelEvent(event)
+        elif modifiers == QtCore.Qt.AltModifier:
+            super().wheelEvent(event)
+        elif modifiers == QtCore.Qt.ControlModifier:
+            angle = event.angleDelta() / degree
+            delta = angle.y() / step
+            if delta > 0:
+                self.zoom_in()
+            else:
+                self.zoom_out()
+        else:
+            num_degrees = event.angleDelta() / degree
+            num_steps = num_degrees / step
+            delta = int(num_steps.y())
+            self.change_slice(delta)
+
+    def change_slice(self, delta):
+        current_value = self.slider.value()
+        new_value = current_value + delta
+
+        if new_value < self.slider.minimum():
+            new_value = self.slider.minimum()
+        elif new_value > self.slider.maximum():
+            new_value = self.slider.maximum()
+
+        self.slider.setValue(new_value)
+        self.value_changed()
 
     def value_changed(self):
         self.update_view()
         if self.horizontal_view is not None and self.vertical_view is not None:
             self.horizontal_view.update_view()
             self.vertical_view.update_view()
+        if self.windowing_slider is not None:
+            self.windowing_slider.update_density_histogram()
 
     def update_view(self, zoom_change=False):
         """

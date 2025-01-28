@@ -256,8 +256,8 @@ class UIOpenPatientWindow(object):
                        "to load Patient's details:"))
         self.open_patient_directory_input_box.setPlaceholderText(
             _translate("OpenPatientWindowInstance",
-                       "Enter DICOM Files Path (For example, C:\path\\to\your"
-                       "\DICOM\Files)"))
+                       "Enter DICOM Files Path (For example, C:\\path\\to\\your"
+                       "\\DICOM\\Files)"))
         self.open_patient_directory_choose_button.setText(
             _translate("OpenPatientWindowInstance", "Choose"))
         self.open_patient_directory_appear_prompt.setText(
@@ -433,7 +433,8 @@ class UIOpenPatientWindow(object):
         # Total number of selected image series
         total_selected_image_series = selected_series_types.count('CT') + \
                                       selected_series_types.count('MR') + \
-                                      selected_series_types.count('PT')
+                                      selected_series_types.count('PT') + \
+                                      selected_series_types.count('CR')
 
         # Check the existence of IMAGE, RTSTRUCT, RTPLAN and RTDOSE files
         proceed = True
@@ -555,6 +556,13 @@ class UIOpenPatientWindow(object):
             QMessageBox.about(self.progress_window, "Unable to open selection",
                               "Selected files cannot be opened as they contain"
                               " unsupported DICOM classes.")
+        elif isinstance(exception[1],ImageLoading.NotInteroperableWithOnkoDICOMError):
+            msg = "Selected files cannot be opened as they are missing values "\
+                  "for DICOM elements needed by OnkoDICOM: "
+            msg += repr(exception[1])
+            QMessageBox.about(self.progress_window, "Unable to open selection",
+                              msg
+                              )
             self.progress_window.close()
 
     def get_checked_nodes(self, root):
@@ -568,7 +576,7 @@ class UIOpenPatientWindow(object):
         def recurse(parent_item: QTreeWidgetItem):
             for i in range(parent_item.childCount()):
                 child = parent_item.child(i)
-                if int(child.flags()) & int(Qt.ItemIsUserCheckable) and \
+                if child.flags() & Qt.ItemIsUserCheckable and \
                         child.checkState(0) == Qt.Checked:
                     checked_items.append(child)
                 grand_children = child.childCount()

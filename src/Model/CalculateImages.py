@@ -18,6 +18,9 @@ def convert_raw_data(ds, rescaled=True, is_ct=False):
     non_img_list = ['rtss', 'rtdose', 'rtplan', 'rtimage']
     np_pixels = []
 
+    # Invert pixel colour of MONOCHROME1-style images
+    inverted = (ds[0].PhotometricInterpretation == "MONOCHROME1")
+
     # Do the conversion to every slice (except RTSS, RTDOSE, RTPLAN)
     for key in ds:
         if key not in non_img_list:
@@ -35,6 +38,14 @@ def convert_raw_data(ds, rescaled=True, is_ct=False):
                     # Store the rescaled data
                     ds[key]._pixel_array = data_arr
                 np_pixels.append(np_tmp._pixel_array)
+
+    # Invert the colours based on max value
+    if inverted:
+        max_val = np.amax(np_pixels)
+        np_pixels_inverted = np.multiply(np_pixels, -1)
+        np_pixels_inverted = np.add(np_pixels_inverted, max_val)
+        return np_pixels_inverted
+
     return np_pixels
 
 
@@ -104,7 +115,11 @@ def scaled_pixmap(np_pixels, window, level, width, height,
     :return: pixmap, a QPixmap of the slice
     """
 
-    # Rescale pixel arrays
+    ''' The numpy pixel array is converted to a signed int before any additional operations are applied.
+    This is due to the pydicom.dataset.Dataset.convert_pixel_data() function returning a numpy array of dtype uint16.
+    The dtype is dependent on the DICOM elements: BitsAllocated and PixelRepresentation.
+    dtype could theoretically return any combination of unsigned/signed 1, 8, 16, 32, or 64 bit values.
+    Undefined behaviour when np_pixels is any type other than uint16 or int16. '''
     np_pixels = np_pixels.astype(np.int16)
     if window != 0 and level != 0:
         # Transformation applied to each individual pixel to unique
@@ -233,6 +248,7 @@ def get_pixmaps(pixel_array, window, level, pixmap_aspect,
             fusion,
             color)
 
+    for i in range(pixel_array_3d.shape[2]):
         dict_pixmaps_sagittal[i] = scaled_pixmap(
             pixel_array_3d[:, :, i],
             window,

@@ -376,8 +376,12 @@ class ActionHandler:
         self.is_four_view = False
 
         self.__main_page.dicom_view.setCurrentWidget(
-            self.__main_page.dicom_single_view)
+            self.__main_page.dicom_single_view_widget)
         self.__main_page.dicom_single_view.update_view()
+        self.__main_page.dicom_single_view_layout.addWidget(
+            self.__main_page.windowing_slider, 0, 0)
+        self.__main_page.windowing_slider.set_dicom_view(
+            self.__main_page.dicom_single_view)
 
         if hasattr(self.__main_page, 'image_fusion_view'):
             self.has_image_registration_four = False
@@ -392,8 +396,12 @@ class ActionHandler:
         self.is_four_view = True
 
         self.__main_page.dicom_view.setCurrentWidget(
-            self.__main_page.dicom_four_views)
+            self.__main_page.dicom_four_views_slider)
         self.__main_page.dicom_axial_view.update_view()
+        self.__main_page.dicom_four_views_slider_layout.addWidget(
+            self.__main_page.windowing_slider, 0, 0)
+        self.__main_page.windowing_slider.set_dicom_view(
+            self.__main_page.dicom_axial_view)
 
         if hasattr(self.__main_page, 'image_fusion_view'):
             self.has_image_registration_four = True
